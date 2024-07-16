@@ -1,0 +1,13 @@
+rootProject.name = 'management-service'
+
+includeBuild '../../shared/common-objects'
+includeBuild '../../shared/logging-utils'
+includeBuild '../../shared/archunit-tests'
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            from(files("../../gradle/libs.versions.toml"))
+        }
+    }
+}

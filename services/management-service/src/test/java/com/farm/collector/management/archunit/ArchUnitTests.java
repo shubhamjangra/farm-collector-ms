@@ -1,0 +1,10 @@
+package com.farm.collector.management.archunit;
+
+import com.farm.collector.archunit.AbstractArchUnitTests;
+import com.tngtech.archunit.core.importer.ImportOption;
+import com.tngtech.archunit.junit.AnalyzeClasses;
+
+@AnalyzeClasses(packages = "com.farm.collector",
+        importOptions = {ImportOption.DoNotIncludeTests.class, ImportOption.DoNotIncludeJars.class})
+public class ArchUnitTests extends AbstractArchUnitTests {
+}

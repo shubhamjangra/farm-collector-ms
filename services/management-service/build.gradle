@@ -1,0 +1,131 @@
+plugins {
+    alias(libs.plugins.springBoot)
+    alias(libs.plugins.springDependencyManagement)
+    id 'java'
+    alias(libs.plugins.docker)
+    alias(libs.plugins.sonarqube)
+    id 'checkstyle'
+    id 'jacoco'
+    alias(libs.plugins.gitProperties)
+}
+
+group = 'com.farm.collector'
+version = '0.1.0'
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(libs.versions.java.get())
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+}
+
+jar {
+    enabled = false
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework:spring-aop'
+    implementation platform(libs.spring)
+    implementation 'com.github.ben-manes.caffeine:caffeine'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation "com.farm.collector:common-objects"
+    implementation "com.farm.collector:logging-utils"
+    runtimeOnly 'org.postgresql:postgresql'
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation libs.h2database
+    testImplementation 'com.farm.collector:archunit-tests'
+    implementation libs.hibernateTypes
+    implementation platform(libs.springCloud)
+    implementation libs.logstash
+    implementation libs.springDoc
+    implementation libs.springCloudOpenFeign
+    implementation libs.jsonPath
+    implementation libs.servlet
+    testImplementation libs.mockitoInline
+}
+
+jacocoTestReport {
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "com/farm/collector/management/config/**",
+                    "com/farm/collector/management/domain/**",
+                    "com/farm/collector/management/exception/**",
+                    "com/farm/collector/management/repository/**",
+                    "com/farm/collector/management/service/**"
+            ])
+        }))
+    }
+    reports {
+        html.required = true
+        xml.required = true
+    }
+}
+test.finalizedBy jacocoTestReport
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events("passed", "failed", "skipped")
+    }
+}
+
+docker {
+    dependsOn bootJar
+    name "${project.group}/${jar.archiveBaseName.get()}:${version}"
+    copySpec.from("build/libs").into("libs")
+    dockerfile file('src/main/resources/docker/Dockerfile')
+}
+
+tasks.withType(Checkstyle).configureEach {
+    configFile file('codequality/checkstyle.xml')
+    checkstyleTest.enabled = false
+}
+
+tasks.register('printVersion') {
+    doLast {
+        println project.version
+    }
+}
+sonarqube {
+    properties {
+        property 'sonar.coverage.exclusions', "**/config/**, **/domain/**, **/service/**, **/exception/**, **/repository/**"
+    }
+}
+
+gitProperties {
+    dateFormat = "yyyy-MM-dd'T'HH:mmZ"
+    dateFormatTimeZone = "IST"
+}
+
+springBoot {
+    buildInfo()
+}
+
+dependencyLocking {
+    lockAllConfigurations()
+}
+checkstyle {
+    toolVersion = "10.12.4"
+}
+configurations.implementation {
+    exclude group: 'org.xerial.snappy', module: 'snappy-java'
+}

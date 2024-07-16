@@ -1,0 +1,18 @@
+stages:
+  - init
+  - services
+  # - web-build
+  # - web-ecr
+  # - web-publish
+  # - web-update-tag
+  # - web-deploy
+
+variables:
+  WEB_SERVICE_ENV:
+    description: "Choose service environment [ dev / sit / uat ]"
+    value: "dev"
+  WEB_COMMAND:
+    description: "Choose command [ restart / redeploy / rebuild ]"
+    value: "restart"
+
+init: //TODO
