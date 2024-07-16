@@ -1,9 +1,6 @@
 package com.farm.collector.management.domain.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -21,6 +18,7 @@ import java.util.Objects;
 @Builder(builderClassName = "Builder")
 public class Field extends AuditAwareBaseEntity {
 
+    private String season;
     private String cropType;
     private double plantingArea;
     private double expectedProduct;
@@ -29,8 +27,6 @@ public class Field extends AuditAwareBaseEntity {
     @ManyToOne
     @JoinColumn(name = "farm_id", nullable = false)
     private Farm farm;
-
-    private String season;
 
     @Override
     public boolean equals(Object o) {

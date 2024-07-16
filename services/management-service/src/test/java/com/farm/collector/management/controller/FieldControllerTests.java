@@ -1,6 +1,8 @@
 package com.farm.collector.management.controller;
 
 import com.farm.collector.management.AbstractIntegrationTest;
+import com.farm.collector.management.domain.entity.Farm;
+import com.farm.collector.management.domain.request.FieldRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -19,9 +21,16 @@ class FieldControllerTests extends AbstractIntegrationTest {
 
     @Test
     public void test_add_field() throws Exception {
-        mockMvc.perform(post("/fields")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"cropType\": \"corn\", \"plantingArea\": 10, \"expectedProduct\": 20, \"actualHarvestedProduct\": 18, \"farmId\": 1, \"season\": \"Spring\"}"))
+        final var farm = farmRepository.save(Farm.builder().name("MyFarm").build());
+
+        String content = objectMapper.writeValueAsString(FieldRequest.builder()
+                .season("winter")
+                .farmId(farm.getId())
+                .build());
+
+        mockMvc.perform(post("/api/management-service/fields/add")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(content))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))

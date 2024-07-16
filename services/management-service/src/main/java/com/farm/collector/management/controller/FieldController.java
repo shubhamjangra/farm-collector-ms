@@ -2,6 +2,7 @@ package com.farm.collector.management.controller;
 
 import com.farm.collector.commons.ApiResponse;
 import com.farm.collector.management.domain.entity.Field;
+import com.farm.collector.management.domain.request.FieldRequest;
 import com.farm.collector.management.service.FieldService;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,8 +30,8 @@ public class FieldController {
     @Timed("addField")
     @Operation(description = "This API is used to add the field.",
             summary = "This API adds the field properties.")
-    public ApiResponse<Field> addField(@RequestBody Field field) {
-        return ApiResponse.success(fieldService.saveField(field));
+    public ApiResponse<Field> addField(@RequestBody FieldRequest fieldRequest) {
+        return ApiResponse.success(fieldService.saveField(fieldRequest));
     }
 
     @GetMapping("/season/{season}")
@@ -45,7 +46,7 @@ public class FieldController {
     @Timed("getFieldsByFarm")
     @Operation(description = "This API is used to retrieve the fields.",
             summary = "This API retrieves the fields on the basis of farm and the season.")
-    public ApiResponse<List<Field>> getFieldsByFarmAndSeason(@PathVariable Long farmId, @PathVariable String season) {
+    public ApiResponse<List<Field>> getFieldsByFarmAndSeason(@PathVariable String farmId, @PathVariable String season) {
         return ApiResponse.success(fieldService.getFieldsByFarmAndSeason(farmId, season));
     }
 }

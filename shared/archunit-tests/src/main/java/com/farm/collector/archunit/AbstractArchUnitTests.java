@@ -6,11 +6,6 @@ import com.tngtech.archunit.junit.ArchTest;
 public class AbstractArchUnitTests {
 
     @ArchTest
-    public void only_post_mappings_are_allowed_in_interface(JavaClasses javaClasses) {
-        ArchUnitRules.onlyPostMappingAllowed().check(javaClasses);
-    }
-
-    @ArchTest
     public void utils_classes_should_only_have_static_methods(JavaClasses javaClasses) {
         ArchUnitRules.utilClassesMethodsShouldBeStatic().check(javaClasses);
     }

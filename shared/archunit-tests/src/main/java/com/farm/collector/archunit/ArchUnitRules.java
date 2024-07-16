@@ -1,7 +1,16 @@
 package com.farm.collector.archunit;
 
-import com.tngtech.archunit.core.domain.*;
-import com.tngtech.archunit.lang.*;
+import com.tngtech.archunit.core.domain.JavaAnnotation;
+import com.tngtech.archunit.core.domain.JavaClass;
+import com.tngtech.archunit.core.domain.JavaClasses;
+import com.tngtech.archunit.core.domain.JavaMethod;
+import com.tngtech.archunit.core.domain.JavaModifier;
+import com.tngtech.archunit.lang.AbstractClassesTransformer;
+import com.tngtech.archunit.lang.ArchCondition;
+import com.tngtech.archunit.lang.ArchRule;
+import com.tngtech.archunit.lang.ClassesTransformer;
+import com.tngtech.archunit.lang.ConditionEvents;
+import com.tngtech.archunit.lang.SimpleConditionEvent;
 import com.tngtech.archunit.library.GeneralCodingRules;
 
 import java.lang.reflect.ParameterizedType;
@@ -11,7 +20,10 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.all;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.fields;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.methods;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.no;
 import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
 
 public abstract class ArchUnitRules {
